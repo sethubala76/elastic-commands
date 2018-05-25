@@ -10,29 +10,56 @@ publishing together, or separately:
     *.bind_host interface to bind the specified protocol to
     *.publish_host interface used to advertise for other nodes to connect to
 ----------------------------------
+Configuring Shards
+PUT my_index
+    {
+    "settings": {
+        "number_of_shards": 3,
+        "number_of_replicas": 2
+    }
+}
+
+----------------------------------
+Cluster commands
+PUT _cluster/settings
+{
+    "persistent": {
+        "action.auto_create_index" : false
+    }
+}
+
+whitelist certain patterns:
+PUT _cluster/settings
+{
+    "persistent": {
+        "action.auto_create_index" : "+.monitoring-es*,+logstash-*"
+    }
+}
+----------------------------------
 when the index is created
 PUT my_tweets
 {
-"settings": {
-"number_of_shards": 3
-}
+    "settings": {
+        "number_of_shards": 3
+    }
 }
 --------------------------------
 change settings of an existing index
 PUT my_tweets/_settings
 {
-"index.blocks.write": false
+    "index.blocks.write": false
 }
 --------------------------------
 PUT /_cluster/settings
 {
-"transient" : {
-"logger.org.elasticsearch.discovery" : "DEBUG"
-}
+    "transient" : {
+        "logger.org.elasticsearch.discovery" : "DEBUG"
+    }
 }
 --------------------------------
 PUT _cluster/settings
 {
-"transient" : {
-"logger.org.elasticsearch.transport.TransportService.tracer" : "TRACE"
+    "transient" : {
+        "logger.org.elasticsearch.transport.TransportService.tracer" : "TRACE"
+    }
 }
