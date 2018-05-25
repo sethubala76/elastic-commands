@@ -47,6 +47,60 @@ PUT my_tweets/_settings
     "index.blocks.write": false
 }
 ---------------------------------
+Disabling Wildcards
+PUT _cluster/settings
+{
+    "persistent": {
+        "action.destructive_requires_name" : true
+    }
+}
+Note:- You can not delete the index now. You must given the correct name to delete
+---------------------------------
+The _aliases Endpoint for Index
+
+POST _aliases
+{
+    "actions": [
+    {
+        "add": {
+           "index": "INDEX_NAME",
+           "alias": "ALIAS_NAME"
+        }
+    }
+    ]
+}
+
+Note: To 'remove', just replace 'add' by 'remove'
+---------------------------------
+POST _aliases
+{
+    "actions": [
+        {"add": {"index": "employees", "alias": "contacts"}},
+        {"add": {"index": "clients", "alias": "contacts"}}
+    ]
+}
+
+Note:- “contacts” is an alias for both “employees” and “clients”
+---------------------------------
+GET _aliases
+{
+"clients": {
+    "aliases": {
+         "contacts": {}
+    }
+},
+"my_index": {
+    "aliases": {
+         "my_alias": {}
+    }
+},
+"employees": {
+    "aliases": {
+          "contacts": {}
+    }
+    }
+}
+---------------------------------
 Cluster commands
 PUT _cluster/settings
 {
@@ -75,5 +129,25 @@ PUT _cluster/settings
 {
     "transient" : {
         "logger.org.elasticsearch.transport.TransportService.tracer" : "TRACE"
+    }
+}
+--------------------------------
+Index Templates
+PUT _template/my_template_1
+{
+    "template" : "*",
+    "order" : 1,
+    "settings": {
+        "number_of_shards": 3
+    }
+}
+--------------------------------
+PUT _template/my_template_2
+{
+    "template" : "mylogs_*",
+    "order" : 5,
+    "settings": {
+        "number_of_shards": 5,
+        "number_of_replicas": 2
     }
 }
