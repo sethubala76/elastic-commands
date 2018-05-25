@@ -1,3 +1,24 @@
+when the index is created
+PUT my_tweets
+{
+"settings": {
+"number_of_shards": 3
+}
+}
+--------------------------------
+change settings of an existing index
+PUT my_tweets/_settings
+{
+"index.blocks.write": false
+}
+--------------------------------
+PUT /_cluster/settings
+{
+"transient" : {
+"logger.org.elasticsearch.discovery" : "DEBUG"
+}
+}
+
 PUT _cluster/settings
 {
 "transient" : {
