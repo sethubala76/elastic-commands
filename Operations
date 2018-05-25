@@ -177,6 +177,7 @@ GET _cluster/health?level=indices
 GET _cluster/health?level=shards
 GET _cluster/health?wait_for_status=green
 GET _cluster/health/my_index?wait_for_status=yellow
+GET _cluster/health?wait_for_status=yellow&timeout=10s
 -----------------------------------
 The Routing Table
 GET _cluster/state/routing_table
