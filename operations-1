@@ -35,3 +35,17 @@ PUT logs2
 		}
 	}
 }
+---------------------------------
+PUT my_index/_settings
+{
+	"refresh_interval": "1s"
+}
+
+The Flush API
+POST my_index/_flush
+
+Synced Flush
+POST my_index/_flush/synced
+
+The force merge API
+POST my_index/_forcemerge
