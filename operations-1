@@ -1,0 +1,14 @@
+Mappings
+Field Data Types
+• Simple Types, including:
+‒ text: for full text (analyzed) strings
+‒ keyword: for exact value strings
+‒ date: string formatted as dates, or numeric dates
+‒ integer types: like byte, short, integer, long
+‒ floating-point numbers: float, double, half_float, scaled_float
+‒ boolean
+‒ ip: for IPv4 or IPv6 addresses
+• Hierarchical Types: like object and nested
+• Specialized Types: geo_point, geo_shape and percolator
+
+GET logs/_mappings
