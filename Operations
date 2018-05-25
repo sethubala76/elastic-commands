@@ -1,14 +1,4 @@
 Configuring Network Settings
-
-network.* specify settings for both protocols in one setting
-transport.* specify settings for the transport protocol
-http.* specify settings for the http protocol
-----------------------------------
-*.host specify both bind and publish in one setting
-*.bind_host interface to bind the specified protocol to
-*.publish_host interface used to advertise for other nodes to connect to
-----------------------------------
-Configuring Network Settings
 • Three ways to configure network settings:
     network.* specify settings for both protocols in one setting
     transport.* specify settings for the transport protocol
