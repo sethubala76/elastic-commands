@@ -151,3 +151,44 @@ PUT _template/my_template_2
         "number_of_replicas": 2
     }
 }
+-------------------------------
+GET _template
+
+DELETE _template/my_template_2
+--------------------------------
+PUT _template/my_template_2
+{
+    "template" : "mylogs_*",
+    "order" : 5,
+    "settings": {
+         "number_of_shards": 5,
+         "number_of_replicas": 2
+},
+    "aliases" : {
+        "mylogs_today" : {},
+        "{index}-alias" : {}
+    }
+}
+---------------------------------
+Cluster health
+GET _cluster/health
+GET _cluster/health/my_index
+GET _cluster/health?level=indices
+GET _cluster/health?level=shards
+GET _cluster/health?wait_for_status=green
+GET _cluster/health/my_index?wait_for_status=yellow
+-----------------------------------
+The Routing Table
+GET _cluster/state/routing_table
+GET _cluster/state/routing_table/my_index
+
+Cluster Allocation Explain API
+GET _cluster/allocation/explain
+------------------------------------
+Specific Shard Allocation Details
+GET _cluster/allocation/explain
+{
+    "index" : "my_index",
+    "shard" : 0,
+    "primary" : true
+}
