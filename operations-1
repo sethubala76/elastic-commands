@@ -12,3 +12,26 @@ Field Data Types
 • Specialized Types: geo_point, geo_shape and percolator
 
 GET logs/_mappings
+
+Defining a Mapping
+PUT logs2
+{
+	"mappings": {
+		"log": {
+			"properties": {
+				"level": {
+					"type": "keyword"
+				},
+				"logdate": {
+					"type": "date"
+				},
+				"response": {
+					"type": "long"
+				},
+				"message" : {
+					"type" : "text"
+				}
+			}
+		}
+	}
+}
