@@ -20,21 +20,18 @@ PUT my_index
 }
 
 ----------------------------------
-Cluster commands
-PUT _cluster/settings
+Index Compression
+    ‒ documents are grouped into blocks of 16KB, and then compressed together using LZ4 by default
+    
+PUT my_index
 {
-    "persistent": {
-        "action.auto_create_index" : false
+    "settings": {
+        "number_of_shards": 3,
+        "number_of_replicas": 2,
+        "index.codec" : "best_compression"
     }
-}
+}   
 
-whitelist certain patterns:
-PUT _cluster/settings
-{
-    "persistent": {
-        "action.auto_create_index" : "+.monitoring-es*,+logstash-*"
-    }
-}
 ----------------------------------
 when the index is created
 PUT my_tweets
@@ -49,6 +46,23 @@ PUT my_tweets/_settings
 {
     "index.blocks.write": false
 }
+---------------------------------
+Cluster commands
+PUT _cluster/settings
+{
+    "persistent": {
+        "action.auto_create_index" : false
+    }
+}
+---------------------------------
+whitelist certain patterns:
+PUT _cluster/settings
+{
+    "persistent": {
+        "action.auto_create_index" : "+.monitoring-es*,+logstash-*"
+    }
+}
+
 --------------------------------
 PUT /_cluster/settings
 {
