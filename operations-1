@@ -63,3 +63,14 @@ POST _reindex
 }
 
 -----------------------------------
+POST _reindex
+{
+	"conflicts" : "proceed",
+	"source" : {
+		"index" : "my_index"
+	},
+	"dest" : {
+		"index" : "my_other_index",
+		"version_type" : "external"
+	}
+}
