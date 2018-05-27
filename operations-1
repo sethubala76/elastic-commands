@@ -49,3 +49,17 @@ POST my_index/_flush/synced
 
 The force merge API
 POST my_index/_forcemerge
+
+----------------------------------
+Using _reindex
+POST _reindex
+{
+	"source" : {
+		"index" : "my_index"
+	},
+	"dest" : {
+		"index" : "my_other_index"
+	}
+}
+
+-----------------------------------
