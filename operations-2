@@ -1,0 +1,39 @@
+The _close Endpoint
+
+POST tweets-yesterday/_flush/synced
+POST tweets-yesterday/_close
+
+Configuring Delayed Shard Allocation
+default is 1 minute
+
+PUT _all/_settings
+{
+  "settings" : {
+     "index.unassigned.node_left.delayed_timeout" : "5m"
+  }
+}
+
+Total Shards Per Node (Index)
+
+PUT my_index_3
+{
+  "settings": {
+      "routing": {
+        "allocation": {
+          "total_shards_per_node": 3
+       }
+    }
+  }
+}
+
+Hot/Warm Architecture - Shard Filtering
+1. Tag the Nodes
+node.attr.my_node_type : hot
+node.attr.my_node_type : warm
+2. Configure the Hot Data
+PUT logs-2017-03
+{
+  "settings": {
+     "index.routing.allocation.require.my_node_type" : "hot"
+  }
+}
