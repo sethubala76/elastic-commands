@@ -37,3 +37,36 @@ PUT logs-2017-03
      "index.routing.allocation.require.my_node_type" : "hot"
   }
 }
+3. Move Older Shards to Warm
+PUT logs-2017-02/_settings
+{
+    "index.routing.allocation.require.my_node_type" : "warm"
+}
+
+Shard Filtering for Hardware (as “small”, “medium”, “large”)
+node.attr.my_temp=hot
+node.attr.my_temp=warm
+node.attr.my_server=medium
+node.attr.my_server=small
+
+Configure Your Indices
+PUT my_index1
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1,
+    "index.routing.allocation.include.my_server" : "medium",
+    "index.routing.allocation.require.my_temp" : "hot"
+  }
+}
+
+PUT my_index2
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "index.routing.allocation.include.my_server" : "medium,small",
+    "index.routing.allocation.exclude.my_temp" : "hot"
+  }
+}
+
