@@ -71,5 +71,105 @@ PUT _snapshot/my_repo
     }
 }
 
-Taking a Snapshot
+Taking a Snapshot (unique snapshot name)
 ----------------------------------
+PUT _snapshot/my_repo/my_snapshot_1
+
+Note:snapshot includes all open indices
+
+Specifying Indices
+-------------------
+PUT _snapshot/my_repo/my_logs_snapshot_1
+{
+  "indices": "logs-*",
+  "ignore_unavailable": true,
+  "include_global_state": true
+}
+
+GET _snapshot/my_repo/my_snapshot_2/_status
+
+PUT _snapshot/my_repo/my_logs_snapshot_2?wait_for_completion=true
+{
+  ...
+}
+
+Get information about snapshots in a repo:
+---------------------------------------------
+GET _snapshot/my_repo/_all
+GET _snapshot/my_repo/my_snapshot_1
+DELETE _snapshot/my_repo/my_snapshot_1
+
+Restoring from a Snapshot
+--------------------------
+POST _snapshot/my_repo/my_snapshot_2/_restore
+
+POST _snapshot/my_repo/my_snapshot_2/_restore
+{
+  "indices": "logs-*",
+  "ignore_unavailable": true,
+  "include_global_state": false
+}
+
+Renaming Indices
+------------------
+POST _snapshot/my_repo/my_snapshot_2/_restore
+{
+  "indices": "logs-*",
+  "ignore_unavailable": true,
+  "include_global_state": false,
+  "rename_pattern": "logs-(.+)",
+  "rename_replacement": "restored-logs-$1"
+}
+
+Monitoring Options
+------------------
+‒ Node Stats: _nodes/stats
+‒ Cluster Stats: _cluster/stats
+‒ Index Stats: my_index/_stats
+‒ Pending Cluster Tasks API: _cluster/pending_tasks
+
+GET _cluster/stats
+GET _nodes/stats
+GET _nodes/node1/stats
+GET my_index/_stats
+GET _stats  #You can get the stats from all indices in one request:
+
+Task Management API
+---------------------
+GET _cluster/pending_tasks
+
+GET _tasks  # You can also use this API to cancel a task
+
+The cat API - Human readable format
+-------------------------------------
+GET _cat/nodes
+GET _cat/nodes?v&h=name,disk.avail,search.query_total,heap.percent
+
+
+Monitoring
+-------------
+‒ xpack.monitoring.collection.interval defaults to 10 seconds
+
+Install Monitoring
+--------------------
+ES_HOME/bin/elasticsearch-plugin install x-pack
+KIBANA_HOME/bin/kibana-plugin install x-pack
+
+If Monitoring is on a different cluster than the one being monitored,
+---------------------------------------------------------------------
+xpack.monitoring.exporters:
+  id1:
+    type: http
+    host: ["http://monitoring_cluster:9200"]
+    auth.username: username
+    auth.password: changeme
+
+Configuring Monitoring
+------------------------
+‒ which can be configured in elasticsearch.yml:
+
+xpack.monitoring.collection.indices : The indices to collect data from. Defaults to all indices, but can be a comma-separated list.
+xpack.monitoring.collection.interval : How often data samples are collected. Defaults to 10s
+xpack.monitoring.history.duration : How long before indices created by Monitoring are automatically deleted. Defaults to 7d.
+
+Full list of monitoring is https://www.elastic.co/guide/en/x-pack/current/monitoring-settings.html
