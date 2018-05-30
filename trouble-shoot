@@ -1,4 +1,5 @@
 But what should you do when you see shards lingering in an UNASSIGNED state?
+--------------------------------------------------------------------------------
 [https://www.datadoghq.com/blog/elasticsearch-unassigned-shards/#reason-1-shard-allocation-is-purposefully-delayed]
 1. Shard allocation is purposefully delayed
 2. Too many shards, not enough nodes
@@ -6,5 +7,37 @@ But what should you do when you see shards lingering in an UNASSIGNED state?
 4. Shard data no longer exists in the cluster
 5. Low disk watermark
 6. Multiple Elasticsearch versions
-
+-----------------------------------------------
 curl -XGET localhost:9200/_cat/shards?h=index,shard,prirep,state,unassigned.reason| grep UNASSIGNED
+
+If you’re running version 5+ of Elasticsearch
+curl -XGET localhost:9200/_cluster/allocation/explain?pretty
+
+curl -XDELETE 'localhost:9200/index_name/'
+------------------------------------------------
+Reason 1: Shard allocation is purposefully delayed
+[TIMESTAMP][INFO][cluster.routing] [MASTER NODE NAME] delaying allocation for [54] unassigned shards, next check in [1m]
+
+You can dynamically modify the delay period like so:
+curl -XPUT 'localhost:9200/<INDEX_NAME>/_settings' -d 
+'{
+	"settings": {
+	   "index.unassigned.node_left.delayed_timeout": "30s"
+	}
+}
+
+Note:- Replacing <INDEX_NAME> with _all for all indecies in your cluster
+-------------------------------------------------------------
+Reason 2: Too many shards, not enough nodes
+
+N >= R + 1
+
+curl -XPUT 'localhost:9200/<INDEX_NAME>/_settings' -d '{"number_of_replicas": 2}'
+
+Reason 3: You need to re-enable shard allocation
+Note:- Shard allocation is enabled by default on all nodes, but you may have disabled shard allocation at some point (for example, in order to perform a rolling restart), and forgotten to re-enable it.
+curl -XPUT 'localhost:9200/_cluster/settings' -d
+'{ "transient":
+    { "cluster.routing.allocation.enable" : "all" 
+    }
+}'
