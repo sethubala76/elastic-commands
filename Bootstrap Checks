@@ -1,0 +1,67 @@
+JVM Checks
+--------------
+heap size
+disable swapping
+not use serial collector
+OnError and OnOutOfMemoryError
+G1GC
+server JVM
+
+Linux Checks
+--------------
+maximum map count
+maximum size virtual memory
+maximum number of threads
+file descriptor
+system call filter
+
+Heap size
+----------
+jvm.options
+-Xms2g
+-Xmx2g
+
+Commandline : ES_JAVA_OPTS="-Xms2g -Xmx2g" bin/elasticsearch
+
+Not use serial collector
+--------------------------
+‒ ensures that Elasticsearch is not configured to run with the serial garbage collector
+
+Disable swapping
+-------------------------
+‒ configure the JVM to lock the heap in memory using mlockall (Linux) or virtual lock (Windows)
+‒ If bootstrap.memory_lock is true, ES will verify locking
+
+GET _nodes/process
+
+OnError and OnOutOfMemoryError
+--------------------------------
+‒ To pass this check, do not enable OnError nor OnOutOfMemoryError in our JVM options
+‒ instead, upgrade to Java 8u92+ and use the JVM flag ExitOnOutOfMemoryError
+
+G1GC
+----
+‒ the G1GC garbage collector can not be enabled on versions of the JDK prior to JDK8u40 (and is not recommended anyway)
+
+Server JVM
+-----------
+‒ OpenJDK has a client JVM and a server JVM
+‒ you must start Elasticsearch with the server VM
+
+Linux Checks
+============
+Maximum map count
+‒ you must configure vm.max_map_count via sysctl to be at least 262,144
+Maximum size virtual memory
+‒ configure your system to allow the Elasticsearch process the ability to have unlimited address space
+‒ set “as” to “unlimited” in /etc/security/limits.conf
+Maximum number of threads
+‒ configure your system to allow the Elasticsearch process the ability to create at least 2,048 threads
+‒ set the proc setting in /etc/security/limits.conf
+File descriptor
+‒ increase the limit on the number of open files descriptors for the user running Elasticsearch to 65,536 or higher
+‒ set ulimit -n 65536, or set nofile to 65536 in /etc/security/limits.conf
+GET _cat/nodes?v&h=name,file_desc.max
+System call filter
+‒ either fix any configuration errors on your system that prevented system call filters from installing
+‒ or, at your own risk disable system call filters by setting bootstrap.system_call_filter to false
