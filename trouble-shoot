@@ -41,3 +41,12 @@ curl -XPUT 'localhost:9200/_cluster/settings' -d
     { "cluster.routing.allocation.enable" : "all" 
     }
 }'
+
+Reason 4: Shard data no longer exists in the cluster
+If you decide to allocate an unassigned primary shard, make sure to add the "allow_primary": "true" flag to the request:
+curl -XPOST 'localhost:9200/_cluster/reroute' -d 
+'{ "commands" :
+      [ { "allocate" : 
+          { "index" : "my_index", "shard" : 0, "node": "<NODE_NAME>", "allow_primary": "true" }
+      }]
+}'
