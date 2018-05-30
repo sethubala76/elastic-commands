@@ -193,3 +193,7 @@ GET _cluster/allocation/explain
     "shard" : 0,
     "primary" : true
 }
+
+GET _cluster/allocation/explain?pretty
+-------------------------------
+GET _cat/shards?h=index,shard,prirep,state,unassigned.reason
