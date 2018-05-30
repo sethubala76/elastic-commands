@@ -64,3 +64,6 @@ curl -XPUT 'localhost:9200/_cluster/settings' -d
 Note:-  “Percentage values refer to used disk space, while byte values refer to free disk space.”
 
 Reason 6: Multiple Elasticsearch versions
+This problem only arises in clusters running more than one version of Elasticsearch (perhaps in the middle of a rolling upgrade). 
+According to the Elasticsearch documentation, the master node will not assign a primary shard’s replicas to any node running an older version. 
+For example, if a primary shard is running on version 1.4, the master will not be able to assign that shard’s replicas to any node that is running any version prior to 1.4.
