@@ -50,3 +50,17 @@ curl -XPOST 'localhost:9200/_cluster/reroute' -d
           { "index" : "my_index", "shard" : 0, "node": "<NODE_NAME>", "allow_primary": "true" }
       }]
 }'
+
+Reason 5: Low disk watermark
+curl -s 'localhost:9200/_cat/allocation?v'
+
+curl -XPUT 'localhost:9200/_cluster/settings' -d
+'{
+	"transient": {	
+	      "cluster.routing.allocation.disk.watermark.low": "90%"
+	}
+}'
+
+Note:-  “Percentage values refer to used disk space, while byte values refer to free disk space.”
+
+Reason 6: Multiple Elasticsearch versions
