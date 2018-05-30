@@ -1,0 +1,10 @@
+But what should you do when you see shards lingering in an UNASSIGNED state?
+[https://www.datadoghq.com/blog/elasticsearch-unassigned-shards/#reason-1-shard-allocation-is-purposefully-delayed]
+1. Shard allocation is purposefully delayed
+2. Too many shards, not enough nodes
+3. You need to re-enable shard allocation
+4. Shard data no longer exists in the cluster
+5. Low disk watermark
+6. Multiple Elasticsearch versions
+
+curl -XGET localhost:9200/_cat/shards?h=index,shard,prirep,state,unassigned.reason| grep UNASSIGNED
