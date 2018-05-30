@@ -173,3 +173,115 @@ xpack.monitoring.collection.interval : How often data samples are collected. Def
 xpack.monitoring.history.duration : How long before indices created by Monitoring are automatically deleted. Defaults to 7d.
 
 Full list of monitoring is https://www.elastic.co/guide/en/x-pack/current/monitoring-settings.html
+
+
+Handy Query Performance Commands
+To get the wire time:
+(time curl -s -XGET host:9200/tweets*/_search) 2>&1 > /dev/null | grep real | awk '{print $2}'
+To get the took time:
+curl -s -XGET 'host:9200/logstash-*/_search?pretty' | head | grep '"took"' | awk '{print $3}'
+
+The Search Slow Log (in log4j.properties)
+----------------------------------------
+‒ The log file is already configured in log4j2.properties, but disabled by default
+
+PUT my_index/_settings
+{
+  "index.search.slowlog.threshold" : {
+    "query.warn" : "10s",
+    "query.info" : "5s",
+    "query.debug" : "2s",
+    "query.trace" : "0s",
+    "fetch.warn" : "1s",
+    "fetch.info" : "800ms",
+    "fetch.debug" : "500ms",
+    "fetch.trace" : "0s"
+  }
+}
+
+The Indexing Slow Log
+-------------------------------------------------
+‒ already configured in log4j2.properties
+
+PUT my_index/_settings
+{
+  "index.indexing.slowlog" : {
+    "threshold.index" : {
+        "warn" : "10s",
+        "info" : "5s",
+        "debug" : "2s",
+        "trace" : "0s"
+    },
+    "level" : "trace",
+    "source" : 1000
+    }
+  }
+
+Thread Pool Queues
+-----------------------
+GET _nodes/thread_pool
+GET _nodes/stats/thread_pool
+GET _cat/thread_pool?v
+
+The hot_threads API
+-----------------------------
+GET _nodes/hot_threads
+GET _nodes/<node_name>/hot_threads
+
+Logstash Monitoring
+-------------------------------
+bin/logstash-plugin install x-pack
+
+configure in your logstash.yml
+------------------------------------
+xpack.monitoring.elasticsearch.url: "http://PRODUCTION:9200"
+xpack.monitoring.elasticsearch.username: "logstash_system"
+xpack.monitoring.elasticsearch.password: "changeme"
+
+Steps for a Rolling Upgrade
+----------------------------------
+Step 0: backup your cluster!
+To perform a rolling upgrade:
+1. stop non-essential indexing
+2. disable shard allocation
+3. stop and upgrade one node (including plugins)
+4. start the node
+5. re-enable shard allocation and wait
+6. GOTO step 2 (until all nodes are updated)
+-------------------------------------
+
+Rolling Upgrade
+• Step 1: stop indexing data (if possible)
+‒ if you still need to index, that is OK but shard recovery will take longer
+
+• Step 2: Disable shard allocation
+PUT _cluster/settings
+{
+  "transient": {
+     "cluster.routing.allocation.enable" : "none"
+  }
+}
+POST _flush/synced
+
+• Step 3: Install the new version:
+‒ stop the node you want to upgrade (upgrade master nodes first!)
+‒ install the new version (.zip, RPM, DEB, MSI)
+‒ copy the config directory from the old location to the new one
+‒ configure the new node to use the old data directory
+‒ upgrade any plugins if applicable
+
+• Step 4: Start the node up again
+‒ and wait for it to join the cluster
+
+• Step 5: Reenable shard allocation,
+PUT _cluster/settings
+{
+  "transient": {
+    "cluster.routing.allocation.enable" : "all"
+  }
+}
+• then wait for the cluster to be green again:
+‒ if green is not possible, check there are no initializing or relocating shards before continuing
+GET _cat/health
+Repeat for Each Node
+• Step 6 is to start the process over for the next node
