@@ -1,0 +1,75 @@
+Shard Allocation Awareness
+---------------------------------------
+node.attr.my_rack_id=rack1
+node.attr.my_rack_id=rack2
+
+PUT _cluster/settings
+{
+  "persistent": {
+     "cluster.routing.allocation.awareness.attributes": "my_rack_id"
+  }
+}
+
+Configure Forced Awareness
+----------------------------------
+PUT _cluster/settings
+{
+  "persistent": {
+    "cluster": {
+        "routing": {
+           "allocation.awareness.attributes": "my_rack_id",
+           "allocation.awareness.force.my_rack_id.values": "rack1,rack2"
+        }
+      }
+  }
+}
+
+Installing Plugins
+-------------------
+bin/elasticsearch-plugin install analysis-icu
+
+bin/elasticsearch-plugin list
+
+bin/elasticsearch-plugin remove analysis-icu
+
+Cluster Backup
+-------------------
+Repository                        Configuration type
+Shared file system "type"         : "fs"
+Read-only URL "type"              : "url"
+S3 "type"                         : "s3"
+HDFS "type"                       : "hdfs"
+Azure "type"                      : "azure"
+Google Cloud Storage "type"       : "gcs"
+
+
+Registering a Repository
+--------------------------------------
+path.repo: /mnt/my_repo_folder
+needs to be added to elasticsearch.yml on all nodes
+
+register a filesystem repository named “my_repo”
+
+PUT _snapshot/my_repo
+{
+  "type": "fs",
+   "settings": {
+      "location": "/mnt/my_repo_folder"
+    }
+}
+
+File System Repository Settings
+----------------------------------
+PUT _snapshot/my_repo
+{
+  "type": "fs",
+    "settings": {
+      "location": "/mnt/my_repo_folder",
+      "compress": true,
+      "max_restore_bytes_per_sec": "40mb",
+      "max_snapshot_bytes_per_sec": "40mb"
+    }
+}
+
+Taking a Snapshot
+----------------------------------
