@@ -23,3 +23,13 @@ PUT my_index
     }
   }
 }
+
+PUT my_index
+{
+    "settings" : {
+        "index" : {
+            "number_of_shards" : 3, 
+            "number_of_replicas" : 2 
+        }
+    }
+}
