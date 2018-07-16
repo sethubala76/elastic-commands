@@ -1,0 +1,25 @@
+Data type:-
+--------------------
+
+Field datatypesedit
+Each field has a data type which can be:
+a simple type like text, keyword, date, long, double, boolean or ip.
+a type which supports the hierarchical nature of JSON such as object or nested.
+or a specialised type like geo_point, geo_shape, or completion.
+
+PUT my_index 
+{
+  "mappings": {
+    "doc": { 
+      "properties": { 
+        "title":    { "type": "text"  }, 
+        "name":     { "type": "text"  }, 
+        "age":      { "type": "integer" },  
+        "created":  {
+          "type":   "date", 
+          "format": "strict_date_optional_time||epoch_millis"
+        }
+      }
+    }
+  }
+}
