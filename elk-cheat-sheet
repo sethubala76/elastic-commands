@@ -1,3 +1,8 @@
+Thanks to the link,
+
+https://logz.io/blog/elasticsearch-cheat-sheet/
+
+
 Move shards from one node to another
 
 curl -XPOST 'http://localhost:9200/_cluster/reroute' -d '{
@@ -59,3 +64,29 @@ curl -XPUT localhost:9200/_cluster/settings -d '{
 }';echo
 
 Change the number of concurrent streams for a recovery on a single 
+
+curl -XPUT localhost:9200/_cluster/settings -d '{
+    "transient" :{
+       "indices.recovery.concurrent_streams" : 6
+    }
+}';echo
+
+Change the size of the search queue
+
+curl -XPUT localhost:9200/_cluster/settings -d '{
+    "transient" :{
+        "threadpool.search.queue_size" : 2000
+    }
+}';echo
+
+Clear the cache on a node
+
+curl -XPOST 'http://localhost:9200/_cache/clear'
+
+Adjust the circuit breakers
+
+curl -XPUT localhost:9200/_cluster/settings -d '{
+    "persistent" : {
+        "indices.breaker.total.limit" : "40%"
+    }
+}'; echo
