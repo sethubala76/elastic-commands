@@ -1,0 +1,61 @@
+Move shards from one node to another
+
+curl -XPOST 'http://localhost:9200/_cluster/reroute' -d '{
+"commands" : [
+    {
+      "move" :
+      {
+        "index" : "indexname", "shard" : 1,
+        "from_node" : "nodename", "to_node" : "nodename"
+      }
+    }
+]
+}';echo
+
+Force the allocation of an unassigned shard with a reason
+
+curl -XPOST 'http://localhost:9200/_cluster/reroute?explain' -d '{
+  "commands" : [ {
+    "allocate" : {
+      "index" : "indexname", "shard" : 0, "node" : "nodename"
+    }
+  } ]
+}';echo
+
+Remove nodes from clusters gracefully
+
+curl -XPUT localhost:9200/_cluster/settings -d '{
+  "transient" :{
+    "cluster.routing.allocation.exclude._ip" : "1.2.3.4"
+  }
+}';echo
+
+Force a synced flush
+
+curl -XPOST 'localhost:9200/_flush/synced'
+
+Change the number of moving shards to balance the cluster
+
+curl -XPUT localhost:9200/_cluster/settings -d '{
+  "transient" :{
+    "cluster.routing.allocation.cluster_concurrent_rebalance" : 2
+  }
+}';echo
+
+Change the number of shards being recovered simultaneously per node
+
+curl -XPUT localhost:9200/_cluster/settings -d '{
+  "transient" :{
+     "cluster.routing.allocation.node_concurrent_recoveries" : 6
+  }
+}';echo
+
+Change the recovery speed
+
+curl -XPUT localhost:9200/_cluster/settings -d '{
+  "transient" :{
+    "indices.recovery.max_bytes_per_sec" : "80mb"
+  }
+}';echo
+
+Change the number of concurrent streams for a recovery on a single 
