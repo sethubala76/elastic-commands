@@ -24,3 +24,8 @@ sudo yum install docker-ce
 
 sudo systemctl start docker
 sudo usermod -aG docker vamo
+
+mkdir /home/vamo/data
+chmod 777 /home/vamo/data
+docker run --net=host -v /home/vamo/data/:/usr/share/elasticsearch/data/ -e "discovery.type=single-node" -d docker.elastic.co/elasticsearch/elasticsearch:6.5.0
+
