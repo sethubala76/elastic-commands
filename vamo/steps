@@ -29,3 +29,13 @@ mkdir /home/vamo/data
 chmod 777 /home/vamo/data
 docker run --net=host -v /home/vamo/data/:/usr/share/elasticsearch/data/ -e "discovery.type=single-node" -d docker.elastic.co/elasticsearch/elasticsearch:6.5.0
 
+sudo yum install httpd
+sudo systemctl enable httpd.service
+sudo systemctl start httpd.service
+yum install epel-release -y
+yum install --enablerepo="epel" ufw -y
+ufw enable
+ufw allow http
+
+Refer for installing filebeat
+https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-installation.html
