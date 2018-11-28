@@ -17,11 +17,9 @@ system call filter
 
 Heap size
 ----------
-jvm.options
--Xms2g
--Xmx2g
-
-Commandline : ES_JAVA_OPTS="-Xms2g -Xmx2g" bin/elasticsearch
+         export ES_HEAP_SIZE=10g        => Temporary on commandline when we start elasticsearch
+         ES_JAVA_OPTS="-Xms10g -Xmx10g" ./bin/elasticsearch  => xms and Xmx
+          Not to cross 32 GB.                                => off heap: Lucene
 
 Not use serial collector
 --------------------------
@@ -32,6 +30,11 @@ Disable swapping
 ‒ configure the JVM to lock the heap in memory using mlockall (Linux) or virtual lock (Windows)
 ‒ If bootstrap.memory_lock is true, ES will verify locking
 
+          sudo swapoff -a            =>Temporary in OS, 
+          /etc/fstab                 => comment the swap entries inside, wherever it comes.
+          sudo bash -c "echo 'vm.swappiness = 1' >> /etc/sysctl.conf"
+          bootstrap.mlockall: true   => Make an entry in elasticsearch.yml
+          
 GET _nodes/process
 
 OnError and OnOutOfMemoryError
