@@ -1,0 +1,43 @@
+{
+  "trigger": {
+    "schedule": {
+      "daily": {
+        "at": [
+          "00:05"
+        ]
+      }
+    }
+  },
+  "input": {
+    "none": {}
+  },
+  "condition": {
+    "always": {}
+  },
+  "actions": {
+    "email_admin": {
+      "email": {
+        "profile": "standard",
+        "attachments": {
+          "My_daily_report.pdf": {
+            "reporting": {
+              "url": "<Generate PDF link>",
+              "retries": 6,
+              "interval": "1m",
+              "auth": {
+                "basic": {
+                  "username": "XXXXXXX",
+                  "password": "XXXXXXXX"
+                }
+              }
+            }
+          }
+        },
+        "to": [
+          "<abc@abc.com>,<bcd@bcd.com>"
+        ],
+        "subject": "Cash Daily Report"
+      }
+    }
+  }
+}
