@@ -1,0 +1,46 @@
+{
+  "trigger": {
+    "schedule": {
+      "hourly": {
+        "minute": [
+          0,
+          15,
+          30,
+          45
+        ]
+      }
+    }
+  },
+  "input": {
+    "none": {}
+  },
+  "condition": {
+    "always": {}
+  },
+  "actions": {
+    "email_admin": {
+      "email": {
+        "profile": "standard",
+        "attachments": {
+          "SAMPLE.pdf": {
+            "reporting": {
+              "url": "<PDF GENERATOR URL>",
+              "retries": 6,
+              "interval": "1m",
+              "auth": {
+                "basic": {
+                  "username": "elastic",
+                  "password": "::es_redacted::"
+                }
+              }
+            }
+          }
+        },
+        "to": [
+          "Recipient Name <balamurugansethuram@gmail.com>"
+        ],
+        "subject": "DAILY REPORT"
+      }
+    }
+  }
+}
